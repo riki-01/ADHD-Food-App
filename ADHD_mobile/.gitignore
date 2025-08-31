@@ -6,6 +6,7 @@ node_modules/
 #Manual files
 .env
 .env.local
+add_info_for_me.txt
 
 # Expo
 .expo/
