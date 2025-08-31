@@ -1,8 +1,9 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { homeStyles as styles } from '@/assets/styles/home.styles';
+import { styles } from '@/assets/styles/home.styles';
 import { useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/colors';
+import { SignOutButton } from '@/components/SignOutButton';
 
 export default function HomeScreen() {
   const { user } = useUser();
@@ -30,7 +31,7 @@ export default function HomeScreen() {
           <Text style={styles.greeting}>Hello, {userName} 👋</Text>
           <Text style={styles.date}>{today}</Text>
         </View>
-        <Ionicons name="notifications-outline" size={24} color={COLORS.text} />
+        <SignOutButton />
       </View>
 
       <View style={styles.card}>
