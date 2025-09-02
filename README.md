@@ -15,6 +15,7 @@ A mobile application designed to help individuals with ADHD manage their eating 
 - Meal schedule with time slots
 - Quick action buttons
 - Clean, ADHD-friendly interface
+- Sign out button
 
 ### UI/UX
 - ADHD-friendly color schemes
@@ -23,18 +24,13 @@ A mobile application designed to help individuals with ADHD manage their eating 
 - Consistent spacing and typography
 - Touch-friendly interactive elements
 
-## 🎨 Design System
 
 ### Color Themes
-- Ocean (default)
-- Coffee
-- Forest
-- Purple
+- Ocean - Calm and focused
+- Coffee - Warm and comforting
+- Forest - Natural and refreshing
+- Purple - Creative and stimulating
 
-### Typography
-- Clear, readable fonts
-- Consistent text hierarchy
-- Sufficient contrast ratios
 
 ## 🛠 Tech Stack
 
@@ -69,29 +65,37 @@ ADHD_mobile/
 
 ## 🚀 Getting Started
 
-1. Clone the repository
+### Prerequisites
+- Node.js (v16 or later)
+- npm (v8 or later)
+- Expo CLI (`npm install -g expo-cli`)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/ADHD-Food-App.git
+   cd ADHD-Food-App
+   ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Set up environment variables for Clerk
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add your Clerk publishable key:
+   ```
+   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key_here
+   ```
+
 4. Start the development server:
    ```bash
    npx expo start
    ```
 
-## 🎯 Next Steps
+5. Run on your preferred platform:
+   - Press `i` for iOS simulator
+   - Press `a` for Android emulator
+   - Scan the QR code with Expo Go app on your physical device
 
-- [ ] Implement meal logging functionality
-- [ ] Add barcode scanning for food items
-- [ ] Create meal planning calendar
-- [ ] Add notifications for meal times
-- [ ] Implement user profile management
-
-## 🤝 Contributing
-
-Feel free to submit issues and enhancement requests.
-
-## 📝 License
-
-This project is [MIT licensed](LICENSE).
