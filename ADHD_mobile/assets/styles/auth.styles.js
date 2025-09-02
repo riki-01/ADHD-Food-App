@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   illustration: {
     width: 300,
     height: 310,
-    contentFit: "contain",
+    resizeMode: "contain",
   },
   title: {
     fontSize: 32,
