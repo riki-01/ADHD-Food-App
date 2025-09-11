@@ -114,7 +114,7 @@ export default function SignUpScreen() {
         extraScrollHeight={30}>
 
       <View style={styles.container}>
-        <Image source={require("../../assets/images/sign_up.png")} style={styles.illustration} />
+        <Image source={require("../../assets/images/Logo_1.png")} style={styles.illustration} />
         
         <Text style={styles.title}>Create Account</Text>
 
