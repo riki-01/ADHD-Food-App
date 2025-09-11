@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View} from 'react-native'
-import { useSignUp } from '@clerk/clerk-expo'
-import { useRouter} from 'expo-router'
 import { styles } from "@/assets/styles/auth.styles.js"
+import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from "@expo/vector-icons"
-import {COLORS} from "../../constants/colors"
 import { Image } from "expo-image"
+import { useRouter } from 'expo-router'
+import { useState } from 'react'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { COLORS } from "../../constants/colors"
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
