@@ -13,6 +13,12 @@ import {
   View,
 } from 'react-native';
 
+interface ChatMessage {
+  id: string;
+  title: string;
+  preview: string;
+  timestamp: string;
+}
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,7 +27,23 @@ export default function HomeScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
+  const loadRecentChats = async () => {
+    try {
+      const chats = await dataService.getRecentChats();
+      setRecentChats(chats);
+    } catch (error) {
+      console.error('Error loading recent chats:', error);
+    }
+  };
 
+  const loadUserProfile = async () => {
+    try {
+      const profile = await dataService.getUserProfile();
+      setUserProfile(profile);
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
 
   useEffect(() => {
     loadRecentChats();
