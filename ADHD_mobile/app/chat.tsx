@@ -4,6 +4,17 @@ import groqService from '@/services/groqService';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
+import {
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
 interface Message {
   id: string;
@@ -27,6 +38,89 @@ export default function ChatScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
+  // Load messages when component mounts or chatId changes
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (currentChatId) {
+        try {
+          const chatMessages = await dataService.getChatMessages(currentChatId);
+          setMessages(chatMessages);
+        } catch (error) {
+          console.error('Error loading messages:', error);
+        }
+      }
+    };
+
+    loadMessages();
+  }, [currentChatId]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!inputText.trim() || isLoading) return;
+
+    const messageText = inputText.trim();
+    setInputText('');
+    setIsLoading(true);
+
+    try {
+      let conversationId = currentChatId;
+
+      // If no current chat, create a new conversation
+      if (!conversationId) {
+        const title = groqService.generateConversationTitle(messageText);
+        const result = await dataService.createConversation(messageText, title);
+        
+        if (result.success && result.conversationId) {
+          conversationId = result.conversationId;
+          setCurrentChatId(conversationId);
+        } else {
+          console.error('Failed to create conversation:', result.message);
+          setIsLoading(false);
+          return;
+        }
+      } else {
+        // Add user message to existing conversation
+        await dataService.addMessageToChat(conversationId, messageText, "user");
+      }
+
+      // Get conversation history for AI context
+      const conversationHistory = await dataService.getConversationMessagesForAI(conversationId);
+      
+      // Get user context for AI (profile, preferences, inventory)
+      const userContext = await dataService.getUserContextForAI();
+      
+      // Get AI response with user context
+      const aiResponse = await groqService.getResponse(messageText, conversationHistory, userContext);
+      
+      // Add AI response to conversation
+      await dataService.addMessageToChat(conversationId, aiResponse, "assistant");
+
+      // Reload messages to show the new ones
+      const updatedMessages = await dataService.getChatMessages(conversationId);
+      setMessages(updatedMessages);
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Add error message to UI
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        text: "Sorry, I'm having trouble processing your message right now. Please try again.",
+        isUser: false,
+        sender: "assistant",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: Math.floor(Date.now() / 1000)
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderMessage = (message: Message) => {
     return (
