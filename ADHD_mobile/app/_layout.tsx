@@ -1,5 +1,11 @@
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import 'react-native-reanimated';
+
+export const unstable_settings = {
+  anchor: 'login',
+};
 
 export default function RootLayout() {
   return (
