@@ -13,6 +13,14 @@ import {
   View,
 } from 'react-native';
 
+const { width } = Dimensions.get('window');
+
+interface OnboardingData {
+  name: string;
+  age: string;
+  medicalConditions: string[];
+  dietaryGoals: string[];
+}
 
 export default function OnboardingScreen() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,6 +30,18 @@ export default function OnboardingScreen() {
     medicalConditions: [],
     dietaryGoals: [],
   });
+  const [medicalConditions, setMedicalConditions] = useState<string[]>([]);
+  const [dietaryGoals, setDietaryGoals] = useState<string[]>([]);
+
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+
+  const steps = [
+    { title: "Welcome to MindMeal!", subtitle: 'Step 1 of 4' },
+    { title: "Let's get to know you", subtitle: 'Step 2 of 4' },
+    { title: "Let's get to know you", subtitle: 'Step 3 of 4' },
+    { title: "Let's get to know you", subtitle: 'Step 4 of 4' },
+  ];
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -40,7 +60,49 @@ export default function OnboardingScreen() {
     loadOptions();
   }, []);
 
+  const handleNext = async () => {
+    if (currentStep === 0 && !data.name.trim()) {
+      Alert.alert('Error', 'Please enter your name');
+      return;
+    }
+    if (currentStep === 1 && !data.age) {
+      Alert.alert('Error', 'Please enter your age');
+      return;
+    }
+    if (currentStep === 2 && data.medicalConditions.length === 0) {
+      Alert.alert('Error', 'Please select at least one medical condition');
+      return;
+    }
+    if (currentStep === 3 && data.dietaryGoals.length === 0) {
+      Alert.alert('Error', 'Please select at least one dietary goal');
+      return;
+    }
 
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      // Finish onboarding - save data to Firebase
+      try {
+        // Update user profile with name and age
+        await dataService.updateUserProfile({ 
+          name: data.name.trim(),
+          age: parseInt(data.age) 
+        });
+        
+        // Update user preferences
+        await dataService.updateUserPreferences({
+          medicalConditions: data.medicalConditions,
+          dietaryGoals: data.dietaryGoals,
+          allergies: [] // Initialize empty allergies array
+        });
+        
+        router.replace('/(tabs)');
+      } catch (error) {
+        console.error('Error saving onboarding data:', error);
+        Alert.alert('Error', 'Failed to save your information. Please try again.');
+      }
+    }
+  };
 
   const handleBack = () => {
     if (currentStep > 0) {
