@@ -3,6 +3,18 @@
 var data = {
     "users": {
       "du988w": {
+        "profile": {
+          "name": "John Doe",
+          "email": "admin@mail.com",
+          "password": "admin",
+          "age": 30,
+          "createdAt": 1625247600,
+          "updatedAt": 1625247600,
+          "bloodGroup": "O+",
+          "isAdmin": true
+        },
+
+
 
       }
     },
