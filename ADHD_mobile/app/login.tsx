@@ -3,7 +3,69 @@ import { dataService } from '@/services/dataService';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
+export default function LoginScreen() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const tintColor = useThemeColor({}, 'tint');
+
+  const handleAuth = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      if (isLogin) {
+        // Login logic - use Firebase authentication
+        const result = await dataService.authenticateUser(email, password);
+        if (result.success) {
+          router.replace('/(tabs)');
+        } else {
+          Alert.alert('Login Error', result.message || 'Invalid credentials');
+        }
+      } else {
+        // Register logic - use Firebase authentication
+        const registrationResult = await dataService.registerUser(email, password);
+        if (registrationResult.success) {
+          // Registration successful - redirect to onboarding
+          router.replace('/onboarding');
+        } else {
+          Alert.alert('Registration Error', registrationResult.message);
+        }
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.error('Auth error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleAuthMode = () => {
+    setIsLogin(!isLogin);
+    setEmail('');
+    setPassword('');
+  };
 
   return (
     <KeyboardAvoidingView
