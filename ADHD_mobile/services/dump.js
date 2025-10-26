@@ -13,6 +13,12 @@ var data = {
           "bloodGroup": "O+",
           "isAdmin": true
         },
+        "preferences": {
+          "medicalConditions": [
+            "ADHD",
+            "Anxiety"
+          ],
+
 
 
 
