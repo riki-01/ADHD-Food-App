@@ -18,6 +18,14 @@ var data = {
             "ADHD",
             "Anxiety"
           ],
+          "dietaryGoals": [
+            "weight_loss",
+            "clean_eating"
+          ],
+          "allergies": [
+            "Peanuts"
+          ]
+        },
 
 
 
