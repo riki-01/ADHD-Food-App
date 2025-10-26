@@ -11,7 +11,42 @@ export default function ProfileScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        const [options, profile] = await Promise.all([
+          dataService.getProfileOptions(),
+          dataService.getUserProfile()
+        ]);
+        setProfileOptions(options);
+        setUserProfile(profile);
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+      }
+    };
 
+    loadProfileData();
+  }, []);
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            const result = await dataService.logout();
+            if (result.success) {
+              router.replace('/login');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
