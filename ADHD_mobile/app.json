@@ -38,17 +38,8 @@
             "backgroundColor": "#000000"
           }
         }
-<<<<<<< HEAD
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    }
-=======
       ],
       "expo-web-browser"
     ]
->>>>>>> develop
   }
 }

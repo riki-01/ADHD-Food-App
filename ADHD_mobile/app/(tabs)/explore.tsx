@@ -2,11 +2,8 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { dataService } from '@/services/dataService';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-=======
 // Add this for the shortcut (scan) functionality
 import { router } from 'expo-router';
->>>>>>> develop
 import {
     Alert,
     Modal,
@@ -18,10 +15,7 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-<<<<<<< HEAD
-=======
     RefreshControl,
->>>>>>> develop
 } from 'react-native';
 // Conditional import for DateTimePicker
 let DateTimePicker: any;
@@ -44,12 +38,8 @@ interface InventoryItem {
 
 export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
-<<<<<<< HEAD
-
-=======
   // Added refresh state
   const [refreshing, setRefreshing] = useState(false);
->>>>>>> develop
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [formData, setFormData] = useState({
@@ -67,13 +57,8 @@ export default function InventoryScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const loadInventory = async () => {
-=======
   // Async function to load inventory items
   const loadInventory = async () => {
->>>>>>> develop
       try {
         const inventory = await dataService.getUserInventory();
         setItems(inventory);
@@ -82,11 +67,6 @@ export default function InventoryScreen() {
       }
     };
 
-<<<<<<< HEAD
-    loadInventory();
-  }, []);
-
-=======
   useEffect(() => {
     loadInventory();
   }, []);
@@ -97,7 +77,6 @@ export default function InventoryScreen() {
     setRefreshing(false);
   };
 
->>>>>>> develop
   const openAddModal = () => {
     setEditingItem(null);
     const today = new Date();
@@ -294,11 +273,6 @@ export default function InventoryScreen() {
         <Text style={[styles.headerTitle, { color: textColor }]}>Inventory</Text>
       </View>
 
-<<<<<<< HEAD
-      {/* Items List */}
-      <ScrollView style={styles.itemsList} showsVerticalScrollIndicator={false}>
-        {items.map(renderInventoryItem)}
-=======
       {/* Added Refresh Control*/}
       {/* Items List */}
       <ScrollView 
@@ -322,7 +296,6 @@ export default function InventoryScreen() {
         ) : (
           items.map(renderInventoryItem)
         )}
->>>>>>> develop
       </ScrollView>
 
       {/* Add Button */}
@@ -330,8 +303,6 @@ export default function InventoryScreen() {
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
 
-<<<<<<< HEAD
-=======
       {/* NEW: Scan Button Shortcut */}
       <TouchableOpacity 
         style={styles.scanButton} 
@@ -340,7 +311,6 @@ export default function InventoryScreen() {
         <Ionicons name="barcode-outline" size={24} color="white" />
       </TouchableOpacity>
 
->>>>>>> develop
       {/* Add/Edit Modal */}
       <Modal
         visible={modalVisible}
@@ -528,8 +498,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-<<<<<<< HEAD
-=======
   // NEW: Scan Button Shortcut
   scanButton: {
     position: 'absolute',
@@ -547,7 +515,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
->>>>>>> develop
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
