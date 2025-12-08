@@ -2,6 +2,8 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { dataService } from '@/services/dataService';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
+// Add this for the shortcut (scan) functionality
+import { router } from 'expo-router';
 import {
     Alert,
     Modal,
@@ -13,6 +15,7 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    RefreshControl,
 } from 'react-native';
 // Conditional import for DateTimePicker
 let DateTimePicker: any;
@@ -35,7 +38,8 @@ interface InventoryItem {
 
 export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
-
+  // Added refresh state
+  const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [formData, setFormData] = useState({
@@ -53,8 +57,8 @@ export default function InventoryScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
-  useEffect(() => {
-    const loadInventory = async () => {
+  // Async function to load inventory items
+  const loadInventory = async () => {
       try {
         const inventory = await dataService.getUserInventory();
         setItems(inventory);
@@ -63,8 +67,15 @@ export default function InventoryScreen() {
       }
     };
 
+  useEffect(() => {
     loadInventory();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadInventory();
+    setRefreshing(false);
+  };
 
   const openAddModal = () => {
     setEditingItem(null);
@@ -262,14 +273,42 @@ export default function InventoryScreen() {
         <Text style={[styles.headerTitle, { color: textColor }]}>Inventory</Text>
       </View>
 
+      {/* Added Refresh Control*/}
       {/* Items List */}
-      <ScrollView style={styles.itemsList} showsVerticalScrollIndicator={false}>
-        {items.map(renderInventoryItem)}
+      <ScrollView 
+        style={styles.itemsList} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor={textColor} // Makes the spinner match your theme color
+            colors={['#4CAF50']}  // Android spinner color
+          />
+        }
+      >
+        {items.length === 0 && !refreshing ? (
+          <View style={{ padding: 40, alignItems: 'center' }}>
+            <Text style={{ color: '#999', textAlign: 'center' }}>
+              No items yet. Tap "+" or Scan to add!
+            </Text>
+          </View>
+        ) : (
+          items.map(renderInventoryItem)
+        )}
       </ScrollView>
 
       {/* Add Button */}
       <TouchableOpacity style={styles.addButton} onPress={openAddModal}>
         <Ionicons name="add" size={24} color="white" />
+      </TouchableOpacity>
+
+      {/* NEW: Scan Button Shortcut */}
+      <TouchableOpacity 
+        style={styles.scanButton} 
+        onPress={() => router.push('/scan')}
+      >
+        <Ionicons name="barcode-outline" size={24} color="white" />
       </TouchableOpacity>
 
       {/* Add/Edit Modal */}
@@ -451,6 +490,23 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
     backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  // NEW: Scan Button Shortcut
+  scanButton: {
+    position: 'absolute',
+    bottom: 90, // Places it above the existing Add button
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FF9800', // Orange color to distinguish it from "Add Manually"
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 8,

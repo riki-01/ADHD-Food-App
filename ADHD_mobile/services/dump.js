@@ -26,47 +26,7 @@ var data = {
             "Peanuts"
           ]
         },
-                "inventory": {
-          "Gpkn3v": {
-            "name": "Protein Bar",
-            "quantity": 5,
-            "expiryDate": 1627849600,
-            "boughtDate": 1625247600,
-            "createdAt": 1625247600,
-            "updatedAt": 1625247600,
-            "notes": "Keep in cool place",
-            "isDeleted": false
-          },
-          "ovAUY2": {
-            "name": "Vitamin D",
-            "quantity": 30,
-            "expiryDate": 1630441600,
-            "boughtDate": 1625247600,
-            "createdAt": 1625247600,
-            "updatedAt": 1625247600,
-            "notes": "Store in a cool, dry place",
-            "isDeleted": false
-          }
-        },
-        "chat": {
-          "mWnvcy": {
-            "title": "Help with Diet Plan adsf",
-            "lastUpdated": 1627849600,
-            "createdAt": 1625247600,
-            "messages": {
-              "gQHyVs": {
-                "createdAt": 1625247600,
-                "content": "Hello, I need help with my diet plan."
-              },
-              "rH1md2": {
-                "createdAt": 1625247660,
-                "content": "Sure! What are your dietary goals?"
-              }
-            }
-          }
-        },
-
-                "inventory": {
+        "inventory": {
           "Gpkn3v": {
             "name": "Protein Bar",
             "quantity": 5,
@@ -123,8 +83,6 @@ var data = {
                 isRead: true,
               },
         ],
-
-
 
 
 

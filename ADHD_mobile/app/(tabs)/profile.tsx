@@ -1,9 +1,9 @@
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { dataService } from '@/services/dataService';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 
 export default function ProfileScreen() {
   const [profileOptions, setProfileOptions] = useState<any[]>([]);
@@ -11,41 +11,72 @@ export default function ProfileScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
-  useEffect(() => {
-    const loadProfileData = async () => {
-      try {
-        const [options, profile] = await Promise.all([
-          dataService.getProfileOptions(),
-          dataService.getUserProfile()
-        ]);
-        setProfileOptions(options);
-        setUserProfile(profile);
-      } catch (error) {
-        console.error('Error loading profile data:', error);
-      }
-    };
+  const loadData = async () => {
+    try {
+      const [options, profile] = await Promise.all([
+        dataService.getProfileOptions(),
+        dataService.getUserProfile()
+      ]);
+      setProfileOptions(options);
+      setUserProfile(profile);
+    } catch (error) {
+      console.error('Error loading profile data:', error);
+    }
+  };
 
-    loadProfileData();
+  useEffect(() => {
+    loadData();
   }, []);
 
-  const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            const result = await dataService.logout();
-            if (result.success) {
-              router.replace('/login');
-            }
+  // Refresh profile data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
+
+  const performLogout = async () => {
+    const result = await dataService.logout();
+    if (result.success) {
+      router.replace('/login');
+    }
+  };
+
+  const handleLogout = () => {
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('Are you sure you want to logout?');
+      if (confirmed) {
+        performLogout();
+      }
+    } else {
+      Alert.alert(
+        'Logout',
+        'Are you sure you want to logout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Logout',
+            style: 'destructive',
+            onPress: performLogout,
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
+  };
+
+  // NEW: Handler for menu items
+  const handleOptionPress = (optionTitle: string) => {
+    if (optionTitle === 'Personal Information') {
+      router.push('/personal-info');
+    } else if (optionTitle === 'Dietary Preferences') {
+      router.push('/dietary-preferences');
+    } else {
+      Alert.alert(
+        optionTitle,
+        'This feature is available in the full version of MindMeal.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
   return (
@@ -55,37 +86,43 @@ export default function ProfileScreen() {
         <Text style={[styles.headerTitle, { color: textColor }]}>Profile</Text>
       </View>
 
-      {/* User Info */}
-      <View style={styles.userInfo}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={40} color="white" />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* User Info */}
+        <View style={styles.userInfo}>
+          <View style={styles.avatar}>
+            <Ionicons name="person" size={40} color="white" />
+          </View>
+          <Text style={[styles.userName, { color: textColor }]}>{userProfile?.name || 'User'}</Text>
+          <Text style={[styles.userEmail, { color: '#666' }]}>{userProfile?.email || 'user@example.com'}</Text>
         </View>
-        <Text style={[styles.userName, { color: textColor }]}>{userProfile?.name || 'User'}</Text>
-        <Text style={[styles.userEmail, { color: '#666' }]}>{userProfile?.email || 'user@example.com'}</Text>
-      </View>
 
-      {/* Profile Options */}
-      <View style={styles.optionsContainer}>
-        {profileOptions.map((option) => (
-          <TouchableOpacity key={option.id} style={styles.optionItem}>
-            <View style={styles.optionIcon}>
-              <Ionicons name={option.icon as any} size={24} color="#4CAF50" />
-            </View>
-            <Text style={[styles.optionTitle, { color: textColor }]}>
-              {option.title}
-            </Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+        {/* Profile Options */}
+        <View style={styles.optionsContainer}>
+          {profileOptions.map((option) => (
+            <TouchableOpacity 
+              key={option.id} 
+              style={styles.optionItem}
+              onPress={() => handleOptionPress(option.title)} // <--- Added handler here
+            >
+              <View style={styles.optionIcon}>
+                <Ionicons name={option.icon as any} size={24} color="#4CAF50" />
+              </View>
+              <Text style={[styles.optionTitle, { color: textColor }]}>
+                {option.title}
+              </Text>
+              <Ionicons name="chevron-forward" size={20} color="#999" />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Logout Button */}
+        <View style={styles.logoutContainer}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="#F44336" />
+            <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Logout Button */}
-      <View style={styles.logoutContainer}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="#F44336" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -103,6 +140,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  scrollContent: {
+    paddingBottom: 40,
   },
   userInfo: {
     alignItems: 'center',
@@ -126,7 +166,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   optionsContainer: {
-    flex: 1,
     paddingHorizontal: 20,
   },
   optionItem: {
@@ -147,6 +186,7 @@ const styles = StyleSheet.create({
   logoutContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    marginTop: 20,
   },
   logoutButton: {
     flexDirection: 'row',

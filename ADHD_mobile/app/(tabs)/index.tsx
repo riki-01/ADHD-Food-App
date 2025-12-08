@@ -62,10 +62,15 @@ export default function HomeScreen() {
       router.push('/chat');
     } else if (buttonType === 'Inventory') {
       router.push('/(tabs)/explore');
+    }   // Scan button functionality 
+      else if (buttonType === 'Scan') {
+      router.push('/scan');
     } else {
       console.log(`${buttonType} button pressed`);
     }
   };
+
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>

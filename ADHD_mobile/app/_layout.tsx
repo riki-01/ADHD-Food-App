@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 export const unstable_settings = {
-  anchor: 'login',
+  initialRouteName: 'onboarding',
 };
 
 export default function RootLayout() {
