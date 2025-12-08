@@ -2,6 +2,8 @@
 
 A mobile application designed to help individuals with ADHD manage their eating habits through intuitive meal planning and tracking.
 
+NOTE: The main branch of the repository is named as final. Make sure to switch to this branch before running the project. 
+
 ## 🚀 Features
 
 ### Authentication
@@ -59,9 +61,19 @@ ADHD_mobile/
 │   ├── PageLoader.jsx
 │   ├── SafeScreen.jsx
 │   └── SignOutButton.jsx
-└── constants/
-    └── colors.js
+├── constants/
+│   └── colors.js
+├── docs/
+│   ├── ADS.pdf
+│   ├── DDS.pdf
+│   ├── SRS.pdf
+│   ├── ProjectCharter.pdf
+│   └── PosterDesign.pdf
+│       
+└── README.md
+
 ```
+
 
 ## 🚀 Getting Started
 
