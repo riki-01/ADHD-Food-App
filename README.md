@@ -2,6 +2,8 @@
 
 A mobile application designed to help individuals with ADHD manage their eating habits through intuitive meal planning and tracking.
 
+
+
 ## 🚀 Features
 
 ### Authentication

@@ -2,6 +2,11 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { dataService } from '@/services/dataService';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
+<<<<<<< HEAD
+=======
+// Add this for the shortcut (scan) functionality
+import { router } from 'expo-router';
+>>>>>>> develop
 import {
     Alert,
     Modal,
@@ -13,6 +18,10 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+<<<<<<< HEAD
+=======
+    RefreshControl,
+>>>>>>> develop
 } from 'react-native';
 // Conditional import for DateTimePicker
 let DateTimePicker: any;
@@ -35,7 +44,12 @@ interface InventoryItem {
 
 export default function InventoryScreen() {
   const [items, setItems] = useState<InventoryItem[]>([]);
+<<<<<<< HEAD
 
+=======
+  // Added refresh state
+  const [refreshing, setRefreshing] = useState(false);
+>>>>>>> develop
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [formData, setFormData] = useState({
@@ -53,8 +67,13 @@ export default function InventoryScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
 
+<<<<<<< HEAD
   useEffect(() => {
     const loadInventory = async () => {
+=======
+  // Async function to load inventory items
+  const loadInventory = async () => {
+>>>>>>> develop
       try {
         const inventory = await dataService.getUserInventory();
         setItems(inventory);
@@ -63,9 +82,22 @@ export default function InventoryScreen() {
       }
     };
 
+<<<<<<< HEAD
     loadInventory();
   }, []);
 
+=======
+  useEffect(() => {
+    loadInventory();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadInventory();
+    setRefreshing(false);
+  };
+
+>>>>>>> develop
   const openAddModal = () => {
     setEditingItem(null);
     const today = new Date();
@@ -262,9 +294,35 @@ export default function InventoryScreen() {
         <Text style={[styles.headerTitle, { color: textColor }]}>Inventory</Text>
       </View>
 
+<<<<<<< HEAD
       {/* Items List */}
       <ScrollView style={styles.itemsList} showsVerticalScrollIndicator={false}>
         {items.map(renderInventoryItem)}
+=======
+      {/* Added Refresh Control*/}
+      {/* Items List */}
+      <ScrollView 
+        style={styles.itemsList} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor={textColor} // Makes the spinner match your theme color
+            colors={['#4CAF50']}  // Android spinner color
+          />
+        }
+      >
+        {items.length === 0 && !refreshing ? (
+          <View style={{ padding: 40, alignItems: 'center' }}>
+            <Text style={{ color: '#999', textAlign: 'center' }}>
+              No items yet. Tap "+" or Scan to add!
+            </Text>
+          </View>
+        ) : (
+          items.map(renderInventoryItem)
+        )}
+>>>>>>> develop
       </ScrollView>
 
       {/* Add Button */}
@@ -272,6 +330,17 @@ export default function InventoryScreen() {
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
 
+<<<<<<< HEAD
+=======
+      {/* NEW: Scan Button Shortcut */}
+      <TouchableOpacity 
+        style={styles.scanButton} 
+        onPress={() => router.push('/scan')}
+      >
+        <Ionicons name="barcode-outline" size={24} color="white" />
+      </TouchableOpacity>
+
+>>>>>>> develop
       {/* Add/Edit Modal */}
       <Modal
         visible={modalVisible}
@@ -459,6 +528,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
+<<<<<<< HEAD
+=======
+  // NEW: Scan Button Shortcut
+  scanButton: {
+    position: 'absolute',
+    bottom: 90, // Places it above the existing Add button
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FF9800', // Orange color to distinguish it from "Add Manually"
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+>>>>>>> develop
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
